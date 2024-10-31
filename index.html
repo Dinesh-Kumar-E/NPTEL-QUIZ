@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/Resources/favicon.png" type="image/x-icon">
     <style>
         body {
-            background: linear-gradient(178.1deg, rgb(60, 55, 106) 8.5%, rgb(23, 20, 69) 82.4%) ;
+            background: linear-gradient(178.1deg, rgb(60, 55, 106) 8.5%, rgb(23, 20, 69) 82.4%);
             min-height: 100vh;
             font-family: 'Arial', sans-serif;
         }
@@ -58,9 +58,11 @@
         }
 
         .option-box.selected {
-            background-color: rgba(0, 0, 139, 0.7); /* Dark blue background for selected options */
+            background-color: rgba(0, 0, 139, 0.7);
+            /* Dark blue background for selected options */
             border-color: #ffffff;
-            color: white; /* Ensure text is visible */
+            color: white;
+            /* Ensure text is visible */
         }
 
         .option-box.correct {
@@ -206,21 +208,38 @@
         let answerChecked = false;
         let allowMultipleSelections = false; // New flag for multiple selections
 
+        // async function loadQuestions() {
+        //     try {
+        //         const response = await fetch('https://api.jsonbin.io/v3/b/67236e39acd3cb34a8a01468', {
+        //             method: 'GET',
+        //             headers: {
+        //                 'X-Master-Key': '$2a$10$aYeRTvUdfxdHU9D369vN7OKw2IwG9adAsflsG.4SiByO6nIqAsTjK'
+        //             }
+        //         });
+
+        //         if (!response.ok) {
+        //             throw new Error('Failed to load questions');
+        //         }
+
+        //         const data = await response.json();
+        //         questionsData = data.record;
+        //         document.getElementById('loading').style.display = 'none';
+        //         initializeWeeks();
+        //     } catch (error) {
+        //         console.error('Error loading questions:', error);
+        //         alert('Failed to load questions. Please try again.');
+        //     }
+        // }
         async function loadQuestions() {
             try {
-                const response = await fetch('https://api.jsonbin.io/v3/b/67236e39acd3cb34a8a01468', {
-                    method: 'GET',
-                    headers: {
-                        'X-Master-Key': '$2a$10$aYeRTvUdfxdHU9D369vN7OKw2IwG9adAsflsG.4SiByO6nIqAsTjK'
-                    }
-                });
+                const response = await fetch('/resources/data.json');  // Update the path to your local JSON file
 
                 if (!response.ok) {
                     throw new Error('Failed to load questions');
                 }
 
                 const data = await response.json();
-                questionsData = data.record;
+                questionsData = data;
                 document.getElementById('loading').style.display = 'none';
                 initializeWeeks();
             } catch (error) {
@@ -228,6 +247,7 @@
                 alert('Failed to load questions. Please try again.');
             }
         }
+
 
         function initializeWeeks() {
             const weeks2024 = document.getElementById('weeks2024');
@@ -309,148 +329,154 @@
         }
 
         function displayQuestion() {
-    const question = questions[currentQuestionIndex];
-    
-    // Check if multiple selections are allowed based on multiple correct answers
-    const correctAnswers = Object.values(question.options).filter(isCorrect => isCorrect);
-    allowMultipleSelections = correctAnswers.length > 1;
+            const question = questions[currentQuestionIndex];
 
-    document.getElementById('question-text').textContent = question.question;
-    document.getElementById('question-info').textContent = `Year: ${question.year}, Week: ${question.week}`;
-    document.getElementById('result-message').textContent = '';
+            // Check if multiple selections are allowed based on multiple correct answers
+            const correctAnswers = Object.values(question.options).filter(isCorrect => isCorrect);
+            allowMultipleSelections = correctAnswers.length > 1;
 
-    const optionsContainer = document.getElementById('options-container');
-    optionsContainer.innerHTML = '';
+            document.getElementById('question-text').textContent = question.question;
+            document.getElementById('question-info').textContent = `Year: ${question.year}, Week: ${question.week}`;
+            document.getElementById('result-message').textContent = '';
 
-    let options = Object.entries(question.options);
-    if (document.getElementById('shuffleOptions').checked) {
-        options = shuffleArray([...options]);
-    }
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
 
-    // Clear previous selections and state
-    selectedOptions.clear();
-    answerChecked = false;
+            let options = Object.entries(question.options);
+            if (document.getElementById('shuffleOptions').checked) {
+                options = shuffleArray([...options]);
+            }
 
-    options.forEach(([text, isCorrect], index) => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'option-box';
-        optionDiv.onclick = () => toggleOption(index);
-        optionDiv.textContent = text;
-        optionDiv.dataset.index = index;
-        optionDiv.dataset.correct = isCorrect;
-        optionsContainer.appendChild(optionDiv);
-    });
+            // Clear previous selections and state
+            selectedOptions.clear();
+            answerChecked = false;
 
-    document.getElementById('proceed-btn').textContent = 'Check Answer';
-}
+            options.forEach(([text, isCorrect], index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-box';
+                optionDiv.onclick = () => toggleOption(index);
+                optionDiv.textContent = text;
+                optionDiv.dataset.index = index;
+                optionDiv.dataset.correct = isCorrect;
+                optionsContainer.appendChild(optionDiv);
+            });
 
-
-function toggleOption(index) {
-    if (answerChecked) return;
-
-    const optionDiv = document.querySelector(`[data-index="${index}"]`);
-
-    // Handle multiple or single selection based on flag
-    if (!allowMultipleSelections) {
-        // Clear previous selections
-        document.querySelectorAll('.option-box').forEach(el => {
-            el.classList.remove('selected');
-        });
-        selectedOptions.clear();
-    }
-
-    // Toggle current option
-    if (selectedOptions.has(index)) {
-        selectedOptions.delete(index);
-        optionDiv.classList.remove('selected');
-    } else {
-        selectedOptions.add(index);
-        optionDiv.classList.add('selected'); // Dark blue background for selected
-    }
-}
-
-function handleProceed() {
-    if (!answerChecked) {
-        checkAnswer();
-    } else {
-        // Move to the next question
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-            displayQuestion();
-        } else {
-            showScore();
+            document.getElementById('proceed-btn').textContent = 'Check Answer';
         }
-    }
-}
 
-// Function to check the answer and display result
-function checkAnswer() {
-    const question = questions[currentQuestionIndex];
-    const options = Object.entries(question.options);
-    const resultMessage = document.getElementById('result-message');
-    const proceedBtn = document.getElementById('proceed-btn');
 
-    if (selectedOptions.size === 0) {
-        alert("Please select an option");
-        return;
-    }
+        function toggleOption(index) {
+            if (answerChecked) return;
 
-    let isCorrect = true;
-    let correctOptions = [];
+            const optionDiv = document.querySelector(`[data-index="${index}"]`);
 
-    // Find correct options and mark them
-    options.forEach(([text, isCorrectOption], index) => {
-        const optionDiv = document.querySelector(`[data-index="${index}"]`);
+            // Handle multiple or single selection based on flag
+            if (!allowMultipleSelections) {
+                // Clear previous selections
+                document.querySelectorAll('.option-box').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                selectedOptions.clear();
+            }
 
-        if (isCorrectOption) {
-            correctOptions.push(index);
-            optionDiv.classList.add('correct'); // Highlight all correct options
-
-            // Check if a correct option was missed
-            if (!selectedOptions.has(index)) {
-                isCorrect = false;
+            // Toggle current option
+            if (selectedOptions.has(index)) {
+                selectedOptions.delete(index);
+                optionDiv.classList.remove('selected');
+            } else {
+                selectedOptions.add(index);
+                optionDiv.classList.add('selected'); // Dark blue background for selected
             }
         }
 
-        // Highlight all selected options
-        if (selectedOptions.has(index)) {
-            if (!isCorrectOption) {
-                optionDiv.classList.add('incorrect'); // Mark incorrect selections
-                isCorrect = false;
+        function handleProceed() {
+            if (!answerChecked) {
+                checkAnswer();
+            } else {
+                // Move to the next question
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    displayQuestion();
+                } else {
+                    showScore();
+                }
             }
         }
-    });
 
-    answerChecked = true;
+        // Function to check the answer and display result
+        function checkAnswer() {
+            const question = questions[currentQuestionIndex];
+            const options = Object.entries(question.options);
+            const resultMessage = document.getElementById('result-message');
+            const proceedBtn = document.getElementById('proceed-btn');
 
-    // Display result message
-    if (isCorrect) {
-        score++;
-        resultMessage.textContent = 'Correct! Click Proceed to the next question.';
-        resultMessage.style.color = 'lightgreen';
-    } else {
-        resultMessage.textContent = `Incorrect. Correct option(s): ${correctOptions.map(index =>
-            document.querySelector(`[data-index="${index}"]`).textContent
-        ).join(', ')}`;
-        resultMessage.style.color = 'red';
-    }
+            if (selectedOptions.size === 0) {
+                alert("Please select an option");
+                return;
+            }
 
-    // Change button text to Proceed
-    proceedBtn.textContent = 'Proceed';
-}
+            let isCorrect = true;
+            let correctOptions = [];
 
-// Function to display the final score
-function showScore() {
-    document.getElementById('question-page').style.display = 'none';
-    document.getElementById('score-page').style.display = 'block';
+            // Find correct options and mark them
+            options.forEach(([text, isCorrectOption], index) => {
+                const optionDiv = document.querySelector(`[data-index="${index}"]`);
 
-    const finalScoreSpan = document.getElementById('final-score');
-    const scorePercentage = (score / questions.length) * 100;
-    finalScoreSpan.textContent = `${score}/${questions.length} (${scorePercentage.toFixed(2)}%)`;
+                if (isCorrectOption) {
+                    correctOptions.push(index);
+                    optionDiv.classList.add('correct'); // Highlight all correct options
 
-    const resultImageContainer = document.getElementById('result-image-container');
-    resultImageContainer.innerHTML = ''; // Clear any previous content
-}
+                    // Check if a correct option was missed
+                    if (!selectedOptions.has(index)) {
+                        isCorrect = false;
+                    }
+                }
+
+                // Highlight all selected options
+                if (selectedOptions.has(index)) {
+                    if (!isCorrectOption) {
+                        optionDiv.classList.add('incorrect'); // Mark incorrect selections
+                        isCorrect = false;
+                    }
+                }
+            });
+
+            answerChecked = true;
+
+            // Display result message
+            if (isCorrect) {
+                score++;
+                resultMessage.textContent = 'Correct! Click Proceed to the next question.';
+                resultMessage.style.color = 'lightgreen';
+            } else {
+                resultMessage.textContent = `Incorrect. Correct option(s): ${correctOptions.map(index =>
+                    document.querySelector(`[data-index="${index}"]`).textContent
+                ).join(', ')}`;
+                resultMessage.style.color = 'red';
+            }
+
+            // Change button text to Proceed
+            proceedBtn.textContent = 'Proceed';
+        }
+
+        // Function to display the final score
+        function showScore() {
+            document.getElementById('question-page').style.display = 'none';
+            document.getElementById('score-page').style.display = 'block';
+
+            const finalScoreSpan = document.getElementById('final-score');
+            const scorePercentage = (score / questions.length) * 100;
+            finalScoreSpan.textContent = `${score}/${questions.length} (${scorePercentage.toFixed(2)}%)`;
+
+            const resultImageContainer = document.getElementById('result-image-container');
+            resultImageContainer.innerHTML = '';
+            // add image based on score
+            if (scorePercentage >= 75) {
+                resultImageContainer.innerHTML = '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp15JDVu04HkJZSAb6ZBeGkSDxWVZmLW5qGQ&s" class="result-image" alt="Perfect Score">';
+            } else {
+                resultImageContainer.innerHTML = '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI2oTI3tSnhm2rAfFvm3shPofpaYIU20m2Sg&s" class="result-image" alt="Poor Score">';
+            }
+        }
 
         window.onload = () => {
             loadQuestions();
