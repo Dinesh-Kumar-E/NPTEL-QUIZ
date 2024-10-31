@@ -349,28 +349,43 @@
             optionsContainer.innerHTML = '';
 
             let options = Object.entries(question.options);
+            let shuffledOptions;
+
             if (document.getElementById('shuffleOptions').checked) {
-                options = shuffleArray([...options]);
+                // Shuffle the options while preserving their original correctness
+                shuffledOptions = shuffleArray(options.map((option, index) => ({
+                    text: option[0],
+                    isCorrect: option[1],
+                    originalIndex: index
+                })));
+            } else {
+                shuffledOptions = options.map((option, index) => ({
+                    text: option[0],
+                    isCorrect: option[1],
+                    originalIndex: index
+                }));
             }
 
             // Clear previous selections and state
             selectedOptions.clear();
             answerChecked = false;
 
-            options.forEach(([text, isCorrect], index) => {
+            // Display shuffled options
+            shuffledOptions.forEach((option, shuffledIndex) => {
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'option-box';
-                optionDiv.onclick = () => toggleOption(index);
-                optionDiv.textContent = text;
-                optionDiv.dataset.index = index;
-                optionDiv.dataset.correct = isCorrect;
+                optionDiv.onclick = () => toggleOption(shuffledIndex);
+                optionDiv.textContent = option.text;
+                optionDiv.dataset.index = shuffledIndex;
+                optionDiv.dataset.correct = option.isCorrect;
+                optionDiv.dataset.originalIndex = option.originalIndex;
                 optionsContainer.appendChild(optionDiv);
             });
 
             document.getElementById('proceed-btn').textContent = 'Check Answer';
         }
 
-
+        // Function to toggle option selection
         function toggleOption(index) {
             if (answerChecked) return;
 
@@ -395,6 +410,7 @@
             }
         }
 
+        // Function to handle proceed/check answer
         function handleProceed() {
             if (!answerChecked) {
                 checkAnswer();
@@ -425,23 +441,24 @@
             let correctOptions = [];
 
             // Find correct options and mark them
-            options.forEach(([text, isCorrectOption], index) => {
-                const optionDiv = document.querySelector(`[data-index="${index}"]`);
+            document.querySelectorAll('.option-box').forEach((optionDiv) => {
+                const index = parseInt(optionDiv.dataset.originalIndex);
+                const isCorrectOption = options[index][1];
 
                 if (isCorrectOption) {
                     correctOptions.push(index);
-                    optionDiv.classList.add('correct'); // Highlight all correct options
+                    optionDiv.classList.add('correct');
 
                     // Check if a correct option was missed
-                    if (!selectedOptions.has(index)) {
+                    if (!selectedOptions.has(parseInt(optionDiv.dataset.index))) {
                         isCorrect = false;
                     }
                 }
 
                 // Highlight all selected options
-                if (selectedOptions.has(index)) {
+                if (selectedOptions.has(parseInt(optionDiv.dataset.index))) {
                     if (!isCorrectOption) {
-                        optionDiv.classList.add('incorrect'); // Mark incorrect selections
+                        optionDiv.classList.add('incorrect');
                         isCorrect = false;
                     }
                 }
@@ -456,7 +473,7 @@
                 resultMessage.style.color = 'lightgreen';
             } else {
                 resultMessage.textContent = `Incorrect. Correct option(s): ${correctOptions.map(index =>
-                    document.querySelector(`[data-index="${index}"]`).textContent
+                    Object.entries(question.options)[index][0]
                 ).join(', ')}`;
                 resultMessage.style.color = 'red';
             }
@@ -464,7 +481,6 @@
             // Change button text to Proceed
             proceedBtn.textContent = 'Proceed';
         }
-
         // Function to display the final score
         function showScore() {
             document.getElementById('question-page').style.display = 'none';
@@ -482,6 +498,14 @@
             } else {
                 resultImageContainer.innerHTML = '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI2oTI3tSnhm2rAfFvm3shPofpaYIU20m2Sg&s" class="result-image" alt="Poor Score">';
             }
+        }
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
         window.onload = () => {
