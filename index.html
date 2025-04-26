@@ -480,149 +480,7 @@
                     </div>
                     <input type="text" id="room-id" class="form-control mb-3" placeholder="Enter room ID">
                     <button id="search-room-btn" class="btn btn-primary">SEARCH ROOM</button>
-                    
-                    <!-- Retro animation for loading -->
-                    <div id="search-animation" style="display: none; margin-top: 20px;">
-                        <div class="search-animation-container">
-                            <div class="search-bar">
-                                <div class="search-box"></div>
-                            </div>
-                            <div class="search-status" style="display: none;">
-                                Processing the results...
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <style>
-                        .search-animation-container {
-                            position: relative;
-                            width: 100%;
-                            margin: 10px 0;
-                            text-align: center;
-                        }
-                        
-                        .search-bar {
-                            height: 20px;
-                            background-color: #343358;
-                            border: 2px solid var(--primary);
-                            border-radius: 10px;
-                            position: relative;
-                            overflow: hidden;
-                        }
-                        
-                        .search-box {
-                            position: absolute;
-                            width: 20px;
-                            height: 16px;
-                            background-color: var(--primary);
-                            border-radius: 5px;
-                            animation: bounce 1s infinite linear;
-                        }
-                        
-                        .search-status {
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: white;
-                            font-weight: bold;
-                            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-                            z-index: 2;
-                        }
-                        
-                        @keyframes bounce {
-                            0%, 100% {
-                                left: 5px;
-                            }
-                            50% {
-                                left: calc(100% - 25px);
-                            }
-                        }
-                        
-                        @keyframes fill {
-                            from {
-                                transform: scaleX(0);
-                                transform-origin: left;
-                            }
-                            to {
-                                transform: scaleX(1);
-                                transform-origin: left;
-                            }
-                        }
-                    </style>
-                    
-                    <script>
-                        // Initialize tooltips
-                        document.addEventListener('DOMContentLoaded', function() {
-                            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                                return new bootstrap.Tooltip(tooltipTriggerEl);
-                            });
-                            
-                            // Modify the search room function
-                            const originalSearchRoom = searchRoom;
-                            searchRoom = function() {
-                                const roomId = roomIdInput.value.trim();
-                                if (!roomId) {
-                                    showToast('Please enter a room ID');
-                                    return;
-                                }
-                                
-                                // Show animation
-                                document.getElementById('search-animation').style.display = 'block';
-                                document.getElementById('search-room-btn').disabled = true;
-                                
-                                // Use setTimeout to simulate the searching process
-                                setTimeout(function() {
-                                    const searchBar = document.querySelector('.search-bar');
-                                    const searchBox = document.querySelector('.search-box');
-                                    const searchStatus = document.querySelector('.search-status');
-                                    
-                                    // Change animation to success state
-                                    searchBox.style.animation = 'none';
-                                    searchBox.style.left = '0';
-                                    searchBox.style.width = '0%';
-                                    
-                                    // Create the green fill effect
-                                    const successFill = document.createElement('div');
-                                    successFill.style.position = 'absolute';
-                                    successFill.style.top = '0';
-                                    successFill.style.left = '0';
-                                    successFill.style.width = '100%';
-                                    successFill.style.height = '100%';
-                                    successFill.style.backgroundColor = 'var(--success)';
-                                    successFill.style.transformOrigin = 'left';
-                                    successFill.style.transform = 'scaleX(0)';
-                                    successFill.style.animation = 'fill 0.5s forwards';
-                                    searchBar.appendChild(successFill);
-                                    
-                                    // Show success message after fill animation
-                                    setTimeout(function() {
-                                        searchStatus.style.display = 'flex';
-                                        
-                                        // Wait a bit more before continuing
-                                        setTimeout(function() {
-                                            // Continue with original function logic
-                                            document.getElementById('search-animation').style.display = 'none';
-                                            document.getElementById('search-room-btn').disabled = false;
-                                            
-                                            // Reset animation elements for next time
-                                            searchBar.removeChild(successFill);
-                                            searchBox.style.animation = 'bounce 1s infinite linear';
-                                            searchStatus.style.display = 'none';
-                                            
-                                            // Call the original search function
-                                            originalSearchRoom();
-                                        }, 500);
-                                    }, 500);
-                                }, 2000); // Simulate searching for 2 seconds
-                            };
-                        });
-                    </script>
+                
                 </div>
             </div>
         </div>
@@ -705,7 +563,8 @@
             </div>
 
             <div class="card mb-4">
-                <h2 id="question-text" class="mb-4">Question goes here !</h2>
+                <h2 id="question-text" class="mb-4">Be Ready ! Question goes here !</h2>
+                <div id="question-info"></div>
 
                 <div id="options-container">
                     <!-- Options will be added here -->
@@ -927,68 +786,163 @@
 
         // Search for room
         function searchRoom() {
-            const roomId = roomIdInput.value.trim();
-            if (!roomId) {
-                showToast('Please enter a room ID');
+            const roomInput = roomIdInput.value.trim();
+            if (!roomInput) {
+                showToast('Please enter a room ID or URL');
                 return;
             }
 
-            // jsonFormat
-            //             {
-            // "questions": [
-            //     {
-            //     "category": "abc",
-            //     "subcategory": "efg",
-            //     "question": "....?",
-            //     "options": [
-            //         {"no": 1, "option": "qweyrty"},
-            //         {"no": 2, "option": "qwerty"},
-            //         {"no": 3, "option": "qwertyyy"}
-            //     ],
-            //     "correctoption": [1, 2]
-            //     }
-            //     // More questions can follow here in the same format
-            // ]
-            // }
-
-            const pastebinUrl = `https://pastebin.com/raw/${roomId}`;
-            // Try multiple CORS proxies in case one is blocked
-            const corsProxies = [
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(pastebinUrl)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(pastebinUrl)}`,
-                `https://cors-anywhere.herokuapp.com/${pastebinUrl}`
-            ];
-
-            // Function to try each proxy until one works
-            function tryProxies(index = 0) {
-                if (index >= corsProxies.length) {
-                    showToast('Failed to access data. All proxies are blocked or unavailable.');
+            // Check toggle state
+            const isDirectUrl = document.getElementById('url-toggle').checked;
+            
+            // Validate input based on toggle state
+            if (isDirectUrl) {
+                // URL mode: Input should look like a URL
+                if (!roomInput.includes('.') && !roomInput.startsWith('http')) {
+                    showToast('Please enter a valid URL when in direct URL mode');
                     return;
                 }
-
-                fetch(corsProxies[index])
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Room not found');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        quizData = data;
-                        populateCategories();
-                        roomScreen.style.display = 'none';
-                        settingsScreen.style.display = 'block';
-                    })
-                    .catch(error => {
-                        console.error(`Error with proxy ${index}:`, error);
-                        // Try next proxy
-                        tryProxies(index + 1);
-                    });
+            } else {
+                // Room ID mode: Input shouldn't look like a URL
+                if (roomInput.includes('.') || roomInput.startsWith('http')) {
+                    showToast('Please enter a room ID, not a URL, when in room ID mode');
+                    return;
+                }
             }
-
-            // Start trying proxies
-            tryProxies();
+            
+            // Determine the target URL based on toggle state
+            let targetUrl;
+            if (isDirectUrl) {
+                // Direct URL mode - use input as-is
+                targetUrl = roomInput.startsWith('http') ? roomInput : `https://${roomInput}`;
+            } else {
+                // Pastebin mode - treat input as a Pastebin ID
+                targetUrl = `https://pastebin.com/raw/${roomInput}`;
+            }
+            
+            // Show loading animation
+            document.getElementById('search-animation').style.display = 'block';
+            document.getElementById('search-room-btn').disabled = true;
+            
+            // Try with proxies if direct access fails
+            fetch(targetUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Direct access failed');
+                    return response.json();
+                })
+                .catch(error => {
+                    // Try with proxy if direct access fails
+                    console.log('Direct access failed, trying proxy:', error);
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+                    return fetch(proxyUrl).then(response => {
+                        if (!response.ok) throw new Error('Proxy access failed');
+                        return response.json();
+                    });
+                })
+                .then(data => {
+                    quizData = data;
+                    populateCategories();
+                    roomScreen.style.display = 'none';
+                    settingsScreen.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('All fetch attempts failed:', error);
+                    showToast('Failed to access data. Please check your input and try again.');
+                })
+                .finally(() => {
+                    // Hide loading animation
+                    document.getElementById('search-animation').style.display = 'none';
+                    document.getElementById('search-room-btn').disabled = false;
+                });
         }
+
+        // Add this HTML right after the room-id input in the room screen:
+        document.addEventListener('DOMContentLoaded', function() {
+            // Insert toggle switch after room-id input
+            const roomIdInput = document.getElementById('room-id');
+            if (roomIdInput) {
+                const toggleSwitch = document.createElement('div');
+                toggleSwitch.className = 'form-check form-switch mt-2 mb-3';
+                toggleSwitch.innerHTML = `
+                    <label class="form-check-label d-flex align-items-center" for="url-toggle">
+                        Treat as direct URL
+                        <div class="info-icon ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                             title="Toggle ON to use a direct JSON URL. Toggle OFF to use a Pastebin ID. Both methods will use proxies to fetch the data if needed.">
+                            <i class="fas fa-info-circle text-primary"></i>
+                        </div>
+                    </label>
+                    <div class="ms-auto">
+                        <input class="form-check-input" type="checkbox" id="url-toggle">
+                    </div>
+                `;
+                toggleSwitch.style.display = "flex";
+                toggleSwitch.style.justifyContent = "space-between";
+                toggleSwitch.style.alignItems = "center";
+                roomIdInput.parentNode.insertBefore(toggleSwitch, roomIdInput.nextSibling);
+                
+                // Initialize tooltip
+                var tooltip = new bootstrap.Tooltip(toggleSwitch.querySelector('[data-bs-toggle="tooltip"]'));
+                
+                // Update placeholder based on toggle state
+                const urlToggle = document.getElementById('url-toggle');
+                urlToggle.addEventListener('change', function() {
+                    roomIdInput.placeholder = this.checked ? 'Enter direct URL' : 'Enter room ID';
+                });
+                
+                // Add the loading animation after the toggle switch
+                const loadingAnimation = document.createElement('div');
+                loadingAnimation.id = 'search-animation';
+                loadingAnimation.style.display = 'none';
+                loadingAnimation.style.marginTop = '20px';
+                loadingAnimation.innerHTML = `
+                    <div class="search-animation-container">
+                        <div class="search-bar">
+                            <div class="search-box"></div>
+                        </div>
+                    </div>
+                `;
+                roomIdInput.parentNode.insertBefore(loadingAnimation, document.getElementById('search-room-btn'));
+                
+                // Add CSS for the loading animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    .search-animation-container {
+                        position: relative;
+                        width: 100%;
+                        margin: 10px 0;
+                        text-align: center;
+                    }
+                    
+                    .search-bar {
+                        height: 20px;
+                        background-color: #343358;
+                        border: 2px solid var(--primary);
+                        border-radius: 10px;
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    
+                    .search-box {
+                        position: absolute;
+                        width: 20px;
+                        height: 16px;
+                        background-color: var(--primary);
+                        border-radius: 5px;
+                        animation: bounce 1s infinite linear;
+                    }
+                    
+                    @keyframes bounce {
+                        0%, 100% {
+                            left: 5px;
+                        }
+                        50% {
+                            left: calc(100% - 25px);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
 
         // Check for roomid parameter in URL and auto-fill it
         document.addEventListener('DOMContentLoaded', function () {
@@ -1092,6 +1046,7 @@
             const percentValueDisplay = document.getElementById('percent-value');
             const questionPercentInput = document.getElementById('question-percent');
             percentValueDisplay.textContent = questionPercentInput.value;
+            
         }
 
         // Initialize the percentage display and add event listener
@@ -1132,7 +1087,7 @@
             // Determine number of questions to include
             const percentToUse = parseInt(questionPercentInput.value);
             const questionCount = Math.max(1, Math.floor(filteredQuestions.length * percentToUse / 100));
-
+                
             // Shuffle questions if needed
             if (shuffleQuestionsCheck.checked) {
                 shuffleArray(filteredQuestions);
@@ -1198,8 +1153,32 @@
             quizProgress.style.width = `${progress}%`;
             quizProgress.textContent = `${Math.round(progress)}%`;
 
-            // Display question
-            questionText.textContent = currentQuestion.question;
+            // Display question with LaTeX support - preprocess for proper LaTeX rendering
+            questionText.innerHTML = preprocessLatex(currentQuestion.question);
+
+            // Add info button with category and subcategory information
+            const questionInfo = document.getElementById('question-info');
+            questionInfo.innerHTML = `
+                <div class="info-button" id="question-info-btn">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="info-tooltip">
+                        <strong>Category:</strong> ${currentQuestion.category}<br>
+                        <strong>Subcategory:</strong> ${currentQuestion.subcategory}
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners for both hover and click
+            const infoButton = document.getElementById('question-info-btn');
+            infoButton.addEventListener('click', function(e) {
+                this.classList.toggle('active');
+                e.stopPropagation();
+            });
+
+            // Close tooltip when clicking elsewhere
+            document.addEventListener('click', function() {
+                infoButton.classList.remove('active');
+            });
 
             // Create a copy of options for shuffling if needed
             let options = [...currentQuestion.options];
@@ -1210,13 +1189,13 @@
             // Clear selected options
             selectedOptions = [];
 
-            // Populate options
+            // Populate options with LaTeX support
             optionsContainer.innerHTML = '';
             options.forEach(option => {
                 const optionCard = document.createElement('div');
                 optionCard.className = 'option-card';
                 optionCard.dataset.optionNo = option.no;
-                optionCard.textContent = option.option;
+                optionCard.innerHTML = preprocessLatex(option.option);
 
                 optionCard.addEventListener('click', () => {
                     toggleOptionSelection(optionCard, option.no);
@@ -1225,11 +1204,186 @@
                 optionsContainer.appendChild(optionCard);
             });
 
+            // Handle MathJax rendering
+            renderMathJax();
+
+            function renderMathJax() {
+                if (!window.MathJax) {
+                    // Load MathJax script with proper configuration
+                    window.MathJax = {
+                        tex: {
+                            inlineMath: [['$', '$'], ['\\(', '\\)']],
+                            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                        },
+                        options: {
+                            enableMenu: false,
+                            processHtmlClass: 'tex2jax_process',
+                            ignoreHtmlClass: 'tex2jax_ignore'
+                        },
+                        startup: {
+                            typeset: true,
+                            pageReady: function() {
+                                return MathJax.startup.defaultPageReady().then(function() {
+                                    console.log("MathJax initial typesetting complete");
+                                });
+                            }
+                        }
+                    };
+                    
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+                    script.async = true;
+                    script.onload = function() {
+                        // After MathJax is loaded, give it a moment to initialize
+                        setTimeout(function() {
+                            console.log("Typesetting after MathJax loaded");
+                            try {
+                                MathJax.typeset();
+                            } catch (err) {
+                                console.error('MathJax typesetting failed:', err);
+                                handleMathErrors();
+                            }
+                        }, 500);
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    // If MathJax is already loaded, use a small delay to ensure content is in the DOM
+                    setTimeout(function() {
+                        try {
+                            console.log("Running MathJax typeset");
+                            MathJax.typeset();
+                        } catch (err) {
+                            console.error('MathJax typesetting failed:', err);
+                            handleMathErrors();
+                        }
+                    }, 100);
+                }
+            }
+
+            // Function to handle math errors by highlighting problematic LaTeX content
+            function handleMathErrors() {
+                const mathElements = document.querySelectorAll('.MathJax_Error, mjx-merror');
+                
+                mathElements.forEach(errorElem => {
+                    // Get the original TeX content that caused the error
+                    let originalTeX = errorElem.getAttribute('data-mjx-error') || 
+                                     errorElem.textContent || 
+                                     'Unknown LaTeX error';
+                    
+                    // Create a replacement element with error styling
+                    const errorContainer = document.createElement('span');
+                    errorContainer.className = 'math-error';
+                    errorContainer.style.color = 'red';
+                    errorContainer.style.cursor = 'pointer';
+                    errorContainer.style.textDecoration = 'underline';
+                    errorContainer.style.position = 'relative';
+                    errorContainer.textContent = originalTeX;
+                    
+                    // Add tooltip on hover
+                    errorContainer.setAttribute('title', 'Math parsing error');
+                    
+                    // Replace the error element with our custom element
+                    if (errorElem.parentNode) {
+                        errorElem.parentNode.replaceChild(errorContainer, errorElem);
+                    }
+                });
+                
+                // Also scan for unprocessed math delimiters that might indicate errors
+                const contentElements = [questionText, ...optionsContainer.querySelectorAll('.option-card')];
+                
+                contentElements.forEach(elem => {
+                    // Look for unprocessed math delimiters (indicators of potential errors)
+                    const content = elem.innerHTML;
+                    
+                    // Simple regex to find potential math markup that wasn't processed
+                    const mathRegex = /(\$\$.*?\$\$|\$.*?\$|\\begin\{.*?\}.*?\\end\{.*?\})/gs;
+                    
+                    // Replace potential unprocessed math with highlighted version
+                    elem.innerHTML = content.replace(mathRegex, (match, p1) => {
+                        // Check if this match wasn't processed by MathJax
+                        if (!match.previousElementSibling || 
+                            !match.previousElementSibling.classList.contains('MathJax') ||
+                            !match.previousElementSibling.classList.contains('mjx-chtml')) {
+                            
+                            return `<span class="math-error" style="color: red; cursor: pointer; text-decoration: underline;" 
+                                   title="Math parsing error">${match}</span>`;
+                        }
+                        return match;
+                    });
+                });
+            }
+
             // Reset check button
             checkBtn.textContent = 'CHECK';
             checkBtn.removeEventListener('click', nextQuestion);
             checkBtn.addEventListener('click', checkAnswer);
         }
+
+        // Helper function to preprocess LaTeX content for proper rendering
+        function preprocessLatex(text) {
+            if (!text) return '';
+            
+            try {
+                // Fix common LaTeX escaping issues in JSON data
+                // Replace double backslashes with single backslashes for LaTeX commands
+                return text.replace(/\\\\([a-zA-Z]+)/g, '\\$1')
+                          .replace(/\\\\([^a-zA-Z])/g, '\\$1')
+                          // Fix specific issues with right arrow and other symbols
+                          .replace(/\\alpha\./g, '\\alpha.')
+                          .replace(/\\beta\./g, '\\beta.')
+                          .replace(/\\delta\./g, '\\delta.');
+            } catch (err) {
+                console.error('Error preprocessing LaTeX:', err);
+                // If preprocessing fails, return the original text with error styling
+                return `<span class="math-error" style="color: red; cursor: pointer;" 
+                        title="Math parsing error">${text}</span>`;
+            }
+        }
+
+        // Add this CSS to the existing <style> section
+        document.head.insertAdjacentHTML('beforeend', `
+        <style>
+            .info-button {
+                display: inline-block;
+                margin-left: 10px;
+                position: relative;
+                cursor: pointer;
+                color: var(--primary);
+                font-size: 1.2rem;
+                vertical-align: middle;
+                transition: color 0.2s;
+            }
+            
+            .info-button:hover {
+                color: var(--secondary);
+            }
+            
+            .info-tooltip {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: #343358;
+                border: 2px solid var(--primary);
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                width: 250px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                z-index: 100;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s, visibility 0.3s;
+                pointer-events: none;
+                font-family: 'VT323', monospace;
+            }
+            
+            .info-button:hover .info-tooltip,
+            .info-button.active .info-tooltip {
+                opacity: 1;
+                visibility: visible;
+            }
+        </style>
+        `);
 
         // Toggle option selection
         function toggleOptionSelection(optionCard, optionNo) {
@@ -1366,13 +1520,29 @@
                 const question = item.question;
                 const selectedOptions = item.selectedOptions;
 
-                // Create question header
+                // Create question header with LaTeX support and info button
+                const headerContainer = document.createElement('div');
+                headerContainer.className = 'd-flex align-items-start';
+                
                 const questionHeader = document.createElement('h4');
-                questionHeader.textContent = `Question ${index + 1}: ${question.question}`;
-                wrongQuestion.appendChild(questionHeader);
+                questionHeader.innerHTML = preprocessLatex(`Question ${index + 1}: ${question.question}`);
+                headerContainer.appendChild(questionHeader);
+                
+                // Add info button with category and subcategory
+                const infoButton = document.createElement('div');
+                infoButton.className = 'info-button ms-2';
+                infoButton.innerHTML = `
+                    <i class="fas fa-info-circle"></i>
+                    <div class="info-tooltip">
+                        <strong>Category:</strong> ${question.category}<br>
+                        <strong>Subcategory:</strong> ${question.subcategory}
+                    </div>
+                `;
+                headerContainer.appendChild(infoButton);
+                
+                wrongQuestion.appendChild(headerContainer);
 
-                // Create options list
-                // Create options list
+                // Create options list with LaTeX support
                 const optionsList = document.createElement('div');
                 optionsList.className = 'mt-3';
 
@@ -1390,13 +1560,31 @@
                         optionItem.classList.add('option-correct');
                     }
 
-                    optionItem.textContent = option.option;
+                    // Use preprocessLatex for LaTeX rendering
+                    optionItem.innerHTML = preprocessLatex(option.option);
                     optionsList.appendChild(optionItem);
                 });
 
                 wrongQuestion.appendChild(optionsList);
                 wrongQuestionsList.appendChild(wrongQuestion);
+                
+                // Add event listeners for both hover and click on the info button
+                infoButton.addEventListener('click', function(e) {
+                    this.classList.toggle('active');
+                    e.stopPropagation();
+                });
             });
+
+            // Close tooltips when clicking elsewhere
+            document.addEventListener('click', function() {
+                const infoButtons = wrongQuestionsList.querySelectorAll('.info-button');
+                infoButtons.forEach(btn => btn.classList.remove('active'));
+            });
+
+            // Render LaTeX content in wrong answers
+            setTimeout(() => {
+                renderMathJax();
+            }, 100);
         }
 
         // Toggle wrong answers visibility

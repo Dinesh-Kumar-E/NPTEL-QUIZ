@@ -283,6 +283,7 @@ p,ul,ol {
                         </ul>
                     </li>
                     <li><span class="tree-item">📄 <a href="#troubleshooting">Troubleshooting</a></span></li>
+                    <li><span class="tree-item">📄 <a href="#results-review">Quiz Results & Review</a></span></li>
                 </ul>
             </div>
 
@@ -323,23 +324,40 @@ p,ul,ol {
                 <h2 class="section-title">QUIZ DATA STRUCTURE</h2>
                 <p>
                     The quiz data must be in JSON format with the following structure:
+                    if using llm to generate the quiz data, make sure to follow the rules below.
                 </p>
-                <pre><code>{
-  "questions": [
-    {
-      "category": "Category Name",
-      "subcategory": "Subcategory Name",
-      "question": "Your question text?",
-      "options": [
-        {"no": 1, "option": "First option"},
-        {"no": 2, "option": "Second option"},
-        {"no": 3, "option": "Third option"}
-      ],
-      "correctoption": [1, 2]  // Array of correct option numbers
-    }
-    // More questions can follow in the same format
-  ]
-}</code></pre>
+                
+                <div class="note-box">
+                    <div class="note-title">JSON Formatting Rules:</div>
+                    <pre>
+<code>
+1. Ensure valid JSON format with correct syntax and no trailing commas.
+2. Escape backslashes as \\ and quotes as \".
+3. Use inline LaTeX for math ($...$) and avoid nested $.
+4. Each option must have a unique "no" (1, 2, 3, etc.).
+5. Questions and options must not be empty.
+6. Ensure correctoption references valid option numbers.
+7. No excessive LaTeX; use short expressions within $...$.
+8. Ensure UTF-8 encoding (Greek letters, etc.) is supported.
+    
+
+{
+    "questions": [
+        {
+            "category": "Category Name",
+            "subcategory": "Subcategory Name",
+            "question": "Your question text?",
+            "options": [
+              {"no": 1, "option": "First option"},
+              {"no": 2, "option": "Second option"},
+              {"no": 3, "option": "Third option"}
+            ],
+            "correctoption": [1, 2]  // Array of correct option numbers
+        }
+          // More questions can follow in the same format
+        ]
+}
+      </code></pre>
             </div>
 
             <div class="section" id="creating-quiz">
@@ -430,6 +448,24 @@ p,ul,ol {
                         </ul>
                     </div>
                 </div>
+
+                <div id="direct-url">
+                    <h3 class="section-subtitle">Using Direct URLs</h3>
+                    <p>
+                        In addition to Pastebin, you can host your quiz JSON on any accessible URL:
+                    </p>
+                    <ol>
+                        <li>Upload your JSON quiz data to a file hosting service or your own server</li>
+                        <li>Ensure CORS is properly configured to allow access from the quiz application</li>
+                        <li>When entering the Room ID, toggle "Treat as direct URL" to ON</li>
+                        <li>Enter the full URL to your JSON file</li>
+                    </ol>
+
+                    <div class="note-box">
+                        <div class="note-title">NOTE:</div>
+                        <p>The application will attempt to use various proxies if direct access fails due to CORS restrictions.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="section" id="sharing-quiz">
@@ -489,6 +525,80 @@ p,ul,ol {
                         </p>
                     </div>
                 </div>
+
+                <div id="latex-support">
+                    <h3 class="section-subtitle">LaTeX Mathematical Formulas</h3>
+                    <p>
+                        QuizBuzz supports LaTeX for displaying mathematical formulas in questions and options.
+                    </p>
+                    <pre><code>{
+  "question": "What is the formula for the area of a circle? $A = \\pi r^2$",
+  "options": [
+    {"no": 1, "option": "Area = $\\pi r^2$"},
+    {"no": 2, "option": "Area = $2\\pi r$"},
+    {"no": 3, "option": "Area = $\\pi d^2$"}
+  ],
+  "correctoption": [1]
+}</code></pre>
+
+                    <div class="example-box">
+                        <div class="example-title">LaTeX Syntax:</div>
+                        <ul>
+                            <li>Inline formulas: <code>$formula$</code></li>
+                            <li>Display formulas: <code>$$formula$$</code></li>
+                            <li>When writing LaTeX in JSON, remember to escape backslashes: <code>\\alpha</code> for \alpha</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">IMPORTANT:</div>
+                        <p>
+                            Invalid LaTeX syntax will be highlighted in red in the quiz. Test your formulas before including them.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="audio-features">
+                    <h3 class="section-subtitle">Audio Features</h3>
+                    <p>
+                        QuizBuzz includes background music and sound effects to enhance the quiz experience:
+                    </p>
+                    <ul>
+                        <li>Background music plays during the quiz</li>
+                        <li>Success sound plays for high scores (≥80%)</li>
+                        <li>Failure sound plays for lower scores</li>
+                        <li>Users can toggle sounds on/off using the volume icon in the top-right corner</li>
+                        <li>Sound preferences are saved between sessions</li>
+                    </ul>
+
+                    <div class="note-box">
+                        <div class="note-title">TIP:</div>
+                        <p>
+                            Sound may require user interaction before playing due to browser autoplay policies.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="shuffle-features">
+                    <h3 class="section-subtitle">Question and Option Shuffling</h3>
+                    <p>
+                        QuizBuzz offers two shuffling options to create varied quiz experiences:
+                    </p>
+                    <ul>
+                        <li><strong>Shuffle Questions:</strong> Randomizes the order of questions in the quiz</li>
+                        <li><strong>Shuffle Options:</strong> Randomizes the order of answer options for each question</li>
+                    </ul>
+                    <p>
+                        Both options can be toggled on/off in the quiz settings screen before starting the quiz.
+                    </p>
+
+                    <div class="note-box">
+                        <div class="note-title">TIP:</div>
+                        <p>
+                            Using both shuffling options helps prevent memorization and creates a fresh experience each time.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div class="section" id="troubleshooting">
@@ -497,7 +607,7 @@ p,ul,ol {
                 <div class="warning-box">
                     <div class="warning-title">Invalid JSON format:</div>
                     <ul>
-                        <li>Validate your JSON using <a href="https://jsonlint.com" target="_blank">jsonlint.com</a></li>
+                        <li>Validate your JSON using <a href="validator.html" target="_blank">QuizzBuzz Validator</a></li>
                         <li>Ensure all brackets and quotes are properly closed</li>
                     </ul>
                 </div>
@@ -533,6 +643,47 @@ p,ul,ol {
                         <li>Escape special JSON characters properly</li>
                         <li>Use Unicode for complex symbols</li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="section" id="results-review">
+                <h2 class="section-title">QUIZ RESULTS & REVIEW</h2>
+                
+                <h3 class="section-subtitle">Score Calculation</h3>
+                <p>
+                    Quiz scores are calculated based on entirely correct answers:
+                </p>
+                <ul>
+                    <li>For questions with a single correct answer, you must select only that answer</li>
+                    <li>For questions with multiple correct answers, you must select all correct options and no incorrect ones</li>
+                    <li>Partial credit is not awarded</li>
+                </ul>
+
+                <h3 class="section-subtitle">Results Animation</h3>
+                <p>
+                    At the end of the quiz, you'll see:
+                </p>
+                <ul>
+                    <li>Your final score as both a raw number and percentage</li>
+                    <li>A celebratory confetti animation for scores of 80% or higher</li>
+                    <li>Different animation and message for lower scores</li>
+                </ul>
+
+                <h3 class="section-subtitle">Wrong Answers Review</h3>
+                <p>
+                    After completing the quiz, you can review all questions you answered incorrectly:
+                </p>
+                <ul>
+                    <li>Click "VIEW WRONG ANSWERS" to see which questions you missed</li>
+                    <li>Correct answers are highlighted in green</li>
+                    <li>Your incorrect selections are highlighted in red</li>
+                </ul>
+                
+                <div class="note-box">
+                    <div class="note-title">TIP:</div>
+                    <p>
+                        Use the wrong answers review to focus your studies on areas that need improvement.
+                    </p>
                 </div>
             </div>
 
