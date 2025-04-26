@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizBuzz Documentation</title>
+    <link rel="icon" href="https://art.pixilart.com/9953c1af326e635.gif" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <style>
+
+p,ul,ol {
+    color: var(--light);
+}
+
+        :root {
+            --primary: #8b58ff;
+            --secondary: #ff5e5e;
+            --dark: #222034;
+            --light: #e6e6e6;
+            --success: #52de97;
+            --warning: #ffae22;
+            --danger: #ff5555;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background-color: var(--dark);
+            color: var(--light);
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary);
+            text-shadow: 2px 2px 0px var(--secondary);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            padding-top: 1.5rem;
+        }
+
+        .subtitle {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--secondary);
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: #2d2b4a;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #4b3b8a;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #7649e6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #4b3b8a;
+        }
+
+        /* TOC styling */
+        .toc {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .toc-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.1rem;
+            color: var(--warning);
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0.5rem;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+            padding-left: 0.5rem;
+        }
+
+        .toc a:hover {
+            color: var(--primary);
+            border-left: 2px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        /* Code block styling */
+        pre {
+            background-color: #1a1a2e;
+            border: 2px solid #4657ce;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        code {
+            font-family: monospace;
+            color: #e6e6e6;
+            background-color: #343358;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* Section styling */
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--success);
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4657ce;
+        }
+
+        .section-subtitle {
+            font-family: 'VT323', monospace;
+            color: var(--warning);
+            font-size: 1.6rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .back-to-top:hover {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        /* Examples styling */
+        .example-box {
+            background-color: #343358;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .example-title {
+            color: var(--warning);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Note styling */
+        .note-box {
+            background-color: #343358;
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .note-title {
+            color: var(--success);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Warning styling */
+        .warning-box {
+            background-color: #343358;
+            border-left: 4px solid var(--danger);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-title {
+            color: var(--danger);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Navigation links */
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="title">QUIZBUZZ DOCUMENTATION</h1>
+            <p>A comprehensive guide to creating and sharing quizzes</p>
+        </div>
+
+        <div class="card">
+            <div class="toc">
+                <div class="toc-title">TABLE OF CONTENTS</div>
+                <ul class="tree-view"></ul>
+                    <li><span class="tree-item">📄 <a href="#introduction">Introduction</a></span></li>
+                    <li><span class="tree-item">📄 <a href="#quiz-data-structure">Quiz Data Structure</a></span></li>
+                    <li>
+                        <span class="tree-item">📁 <a href="#creating-quiz">Creating a Quiz</a></span>
+                        <ul>
+                            <li><span class="tree-branch">├─ 📄 <a href="#basic-structure">Basic Structure</a></span></li>
+                            <li><span class="tree-branch">└─ 📄 <a href="#multiple-correct">Multiple Correct Answers</a></span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="tree-item">📁 <a href="#hosting-quiz">Hosting Your Quiz</a></span>
+                        <ul>
+                            <li><span class="tree-branch">└─ 📄 <a href="#using-pastebin">Using Pastebin</a></span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="tree-item">📁 <a href="#sharing-quiz">Sharing Your Quiz</a></span>
+                        <ul>
+                            <li><span class="tree-branch">└─ 📄 <a href="#room-id">Room ID System</a></span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="tree-item">📁 <a href="#advanced-features">Advanced Features</a></span>
+                        <ul>
+                            <li><span class="tree-branch">├─ 📄 <a href="#categories">Categories and Subcategories</a></span></li>
+                            <li><span class="tree-branch">└─ 📄 <a href="#question-percentage">Question Percentage</a></span></li>
+                        </ul>
+                    </li>
+                    <li><span class="tree-item">📄 <a href="#troubleshooting">Troubleshooting</a></span></li>
+                </ul>
+            </div>
+
+            <style>
+            .tree-view {
+                font-family: monospace;
+                padding-left: 0.5rem;
+            }
+
+            .tree-view ul {
+                padding-left: 1.5rem;
+                list-style-type: none;
+            }
+
+            .tree-item, .tree-branch {
+                display: inline-block;
+                padding: 3px 0;
+            }
+
+            .tree-branch {
+                color: var(--primary);
+            }
+
+            .tree-view a {
+                margin-left: 5px;
+            }
+            </style>
+
+            <div class="section" id="introduction">
+                <h2 class="section-title">INTRODUCTION</h2>
+                <p>
+                    QuizBuzz is a web-based quiz application that allows users to create and share quizzes via Pastebin or other text-sharing services. 
+                    This documentation explains how to properly structure your quiz data and share it with participants.
+                </p>
+            </div>
+
+            <div class="section" id="quiz-data-structure">
+                <h2 class="section-title">QUIZ DATA STRUCTURE</h2>
+                <p>
+                    The quiz data must be in JSON format with the following structure:
+                </p>
+                <pre><code>{
+  "questions": [
+    {
+      "category": "Category Name",
+      "subcategory": "Subcategory Name",
+      "question": "Your question text?",
+      "options": [
+        {"no": 1, "option": "First option"},
+        {"no": 2, "option": "Second option"},
+        {"no": 3, "option": "Third option"}
+      ],
+      "correctoption": [1, 2]  // Array of correct option numbers
+    }
+    // More questions can follow in the same format
+  ]
+}</code></pre>
+            </div>
+
+            <div class="section" id="creating-quiz">
+                <h2 class="section-title">CREATING A QUIZ</h2>
+                
+                <div id="basic-structure">
+                    <h3 class="section-subtitle">Basic Structure</h3>
+                    <p>To create a quiz, follow these steps:</p>
+                    <ul>
+                        <li>Start with the main JSON object containing a "questions" array</li>
+                        <li>For each question:
+                            <ul>
+                                <li>Include "category" and "subcategory" fields for organization</li>
+                                <li>Provide a clear "question" text</li>
+                                <li>List all possible "options" with unique "no" values</li>
+                                <li>Specify correct answer(s) in the "correctoption" array</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <div class="example-box">
+                        <div class="example-title">Example of a single question:</div>
+<pre><code>{
+  "category": "Science",
+  "subcategory": "Physics",
+  "question": "What is the speed of light?",
+  "options": [
+    {"no": 1, "option": "300,000 km/s"},
+    {"no": 2, "option": "150,000 km/s"},
+    {"no": 3, "option": "450,000 km/s"}
+  ],
+  "correctoption": [1]
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="multiple-correct">
+                    <h3 class="section-subtitle">Multiple Correct Answers</h3>
+                    <p>
+                        For questions with multiple correct answers, include all correct option numbers in the "correctoption" array:
+                    </p>
+                    <pre><code>{
+  "category": "History",
+  "subcategory": "World War II",
+  "question": "Which countries were Allied powers in WWII?",
+  "options": [
+    {"no": 1, "option": "United States"},
+    {"no": 2, "option": "Germany"},
+    {"no": 3, "option": "United Kingdom"},
+    {"no": 4, "option": "Japan"}
+  ],
+  "correctoption": [1, 3]
+}</code></pre>
+
+                    <div class="note-box">
+                        <div class="note-title">NOTE:</div>
+                        <p>Users will have to select all correct options to receive credit for the question. Partial credit is not awarded.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="hosting-quiz">
+                <h2 class="section-title">HOSTING YOUR QUIZ</h2>
+                
+                <div id="using-pastebin">
+                    <h3 class="section-subtitle">Using Pastebin</h3>
+                    <p>Follow these steps to host your quiz on Pastebin:</p>
+                    <ol>
+                        <li>Create a Pastebin account at <a href="https://pastebin.com" target="_blank">pastebin.com</a></li>
+                        <li>Paste your complete JSON quiz data</li>
+                        <li>Set expiration to "Never"</li>
+                        <li>Set exposure to "Unlisted" or "Public"</li>
+                        <li>Click "Create New Paste"</li>
+                        <li>Copy the paste ID from the URL (the part after pastebin.com/)</li>
+                    </ol>
+
+                    <div class="example-box">
+                        <div class="example-title">Example:</div>
+                        <p>For URL https://pastebin.com/abc123xyz, the Room ID is <code>abc123xyz</code></p>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">NOTE:</div>
+                        <ul>
+                            <li>Participants enter the Pastebin ID in the Room ID field</li>
+                            <li>The app will fetch the quiz data from Pastebin</li>
+                            <li>Multiple CORS proxies are used to ensure accessibility</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="sharing-quiz">
+                <h2 class="section-title">SHARING YOUR QUIZ</h2>
+                
+                <div id="room-id">
+                    <h3 class="section-subtitle">Room ID System</h3>
+                    <p>
+                        The Room ID system makes it easy to share your quiz with participants. Simply share the Pastebin ID with them, and they can enter it in the Room ID field.
+                    </p>
+                    <p>
+                        You can also pre-fill the Room ID by adding it to the URL:
+                    </p>
+                    <pre><code>https://yourquizurl.com?roomid=PASTEBIN_ID</code></pre>
+
+                    <div class="warning-box">
+                        <div class="warning-title">IMPORTANT:</div>
+                        <p>Make sure your Pastebin is set to "Public" or "Unlisted" to ensure participants can access it.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="advanced-features">
+                <h2 class="section-title">ADVANCED FEATURES</h2>
+                
+                <div id="categories">
+                    <h3 class="section-subtitle">Categories and Subcategories</h3>
+                    <p>
+                        You can organize your questions using categories and subcategories. This allows participants to filter questions by these groupings.
+                    </p>
+                    <pre><code>{
+  "category": "Geography",
+  "subcategory": "Europe",
+  "question": "What is the capital of France?",
+  ...
+}</code></pre>
+
+                    <div class="note-box">
+                        <div class="note-title">TIP:</div>
+                        <p>
+                            Use consistent category and subcategory names across questions to create logical groupings.
+                            Participants can select which categories and subcategories to include in their quiz.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="question-percentage">
+                    <h3 class="section-subtitle">Question Percentage</h3>
+                    <p>
+                        The quiz creator can specify what percentage of questions to include from the available pool.
+                        The app will randomly select that percentage of questions, helping create varied quiz experiences from the same question set.
+                    </p>
+                    <div class="example-box">
+                        <div class="example-title">Example:</div>
+                        <p>
+                            If you have 100 questions in your question pool and set the percentage to 50%, the app will randomly select 50 questions for the quiz.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="troubleshooting">
+                <h2 class="section-title">TROUBLESHOOTING</h2>
+                
+                <div class="warning-box">
+                    <div class="warning-title">Invalid JSON format:</div>
+                    <ul>
+                        <li>Validate your JSON using <a href="https://jsonlint.com" target="_blank">jsonlint.com</a></li>
+                        <li>Ensure all brackets and quotes are properly closed</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Pastebin not loading:</div>
+                    <ul>
+                        <li>Try making the paste "Public" instead of "Unlisted"</li>
+                        <li>Verify the paste ID is correct</li>
+                        <li>The app tries multiple proxies if one fails</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Categories not appearing:</div>
+                    <ul>
+                        <li>Ensure each question has both "category" and "subcategory" fields</li>
+                        <li>These fields should be strings (in quotes)</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Correct answers not registering:</div>
+                    <ul>
+                        <li>Verify "correctoption" contains the exact "no" values from the options</li>
+                        <li>For multiple correct answers, use an array format [1, 3]</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">Special characters in questions:</div>
+                    <ul>
+                        <li>Escape special JSON characters properly</li>
+                        <li>Use Unicode for complex symbols</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+        // Initialize code highlighting
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+        });
+
+        // Back to top button functionality
+        const backToTopButton = document.querySelector('.back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+
+</html>
