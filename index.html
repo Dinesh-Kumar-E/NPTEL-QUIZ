@@ -825,19 +825,32 @@
             document.getElementById('search-room-btn').disabled = true;
             
             // Try with proxies if direct access fails
+            // Define multiple CORS proxies for better reliability
+            const corsProxies = [
+                (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+                (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                (url) => `https://cors-anywhere.herokuapp.com/${url}`,
+                (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+                (url) => `https://proxy.cors.sh/${url}`,
+                (url) => `https://thingproxy.freeboard.io/fetch/${url}`,
+                (url) => `https://crossorigin.me/${url}`,
+                (url) => `https://yacdn.org/proxy/${url}`
+            ];
+
+            // Show loading animation
+            document.getElementById('search-animation').style.display = 'block';
+            document.getElementById('search-room-btn').disabled = true;
+
+            // Try direct fetch first
             fetch(targetUrl)
                 .then(response => {
                     if (!response.ok) throw new Error('Direct access failed');
                     return response.json();
                 })
                 .catch(error => {
-                    // Try with proxy if direct access fails
-                    console.log('Direct access failed, trying proxy:', error);
-                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-                    return fetch(proxyUrl).then(response => {
-                        if (!response.ok) throw new Error('Proxy access failed');
-                        return response.json();
-                    });
+                    console.log('Direct access failed, trying proxies:', error);
+                    // Use recursive function to try each proxy in sequence
+                    return tryNextProxy(0);
                 })
                 .then(data => {
                     quizData = data;
@@ -854,6 +867,27 @@
                     document.getElementById('search-animation').style.display = 'none';
                     document.getElementById('search-room-btn').disabled = false;
                 });
+
+            // Function to try proxies one by one
+            function tryNextProxy(index) {
+                if (index >= corsProxies.length) {
+                    throw new Error('All proxies failed');
+                }
+                
+                const proxyUrl = corsProxies[index](targetUrl);
+                console.log(`Trying proxy ${index+1}/${corsProxies.length}: ${proxyUrl}`);
+                
+                return fetch(proxyUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`Proxy ${index+1} failed`);
+                        return response.json();
+                    })
+                    .catch(error => {
+                        console.log(`Proxy ${index+1} failed:`, error);
+                        // Try next proxy
+                        return tryNextProxy(index + 1);
+                    });
+            }
         }
 
         // Add this HTML right after the room-id input in the room screen:
