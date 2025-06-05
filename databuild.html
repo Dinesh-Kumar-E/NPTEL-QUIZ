@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizBuzz Data Builder</title>
+    <link rel="icon" href="https://art.pixilart.com/9953c1af326e635.gif" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8b58ff;
+            --secondary: #ff5e5e;
+            --dark: #222034;
+            --light: #e6e6e6;
+            --success: #52de97;
+            --warning: #ffae22;
+            --danger: #ff5555;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background-color: var(--dark);
+            color: var(--light);
+            font-size: 1.2rem;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary);
+            text-shadow: 2px 2px 0px var(--secondary);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            padding-top: 1.5rem;
+        }
+
+        .subtitle {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--secondary);
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: #2d2b4a;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .json-input-container {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .json-input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .json-input-title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background-color: var(--danger);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background-color: #cc4444;
+        }
+
+        .json-textarea {
+            width: 100%;
+            min-height: 200px;
+            background-color: #1a1a2e;
+            border: 2px solid #4657ce;
+            border-radius: 8px;
+            color: var(--light);
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 1rem;
+            resize: vertical;
+        }
+
+        .json-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(139, 88, 255, 0.3);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #4b3b8a;
+            transition: all 0.2s;
+            border: none;
+            margin: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #7649e6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #4b3b8a;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            border-color: var(--success);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #2d7a52;
+            transition: all 0.2s;
+            border: none;
+            margin: 0.5rem;
+        }
+
+        .btn-success:hover {
+            background-color: #42c785;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #2d7a52;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #cc8c1a;
+            transition: all 0.2s;
+            border: none;
+            margin: 0.5rem;
+            color: var(--dark);
+        }
+
+        .btn-warning:hover {
+            background-color: #e6981f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #cc8c1a;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #cc4444;
+            transition: all 0.2s;
+            border: none;
+            margin: 0.5rem;
+        }
+
+        .btn-danger:hover {
+            background-color: #e64d4d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #cc4444;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-card {
+            background-color: #343358;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .analytics-number {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: var(--success);
+            display: block;
+        }
+
+        .analytics-label {
+            font-size: 1rem;
+            color: var(--light);
+            margin-top: 0.5rem;
+        }
+
+        .combined-json-container {
+            background-color: #1a1a2e;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .combined-json-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .combined-json-title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--success);
+            font-size: 1.1rem;
+        }
+
+        .combined-textarea {
+            width: 100%;
+            min-height: 300px;
+            background-color: #0f0f1e;
+            border: 1px solid #4657ce;
+            border-radius: 8px;
+            color: var(--light);
+            font-family: monospace;
+            font-size: 0.9rem;
+            padding: 1rem;
+            resize: vertical;
+        }
+
+        .error-message {
+            background-color: var(--danger);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-message {
+            background-color: var(--success);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .control-buttons {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .json-input-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .btn-primary, .btn-success, .btn-warning, .btn-danger {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="title">QUIZBUZZ DATA BUILDER</h1>
+            <p>Combine multiple quiz JSON files into one comprehensive quiz</p>
+        </div>
+
+        <div class="card">
+            <h2 class="subtitle">JSON INPUTS</h2>
+            <div id="json-inputs-container">
+                <!-- Initial JSON input will be added here -->
+            </div>
+            
+            <div class="control-buttons">
+                <button class="btn btn-primary" onclick="addJsonInput()">
+                    <i class="fas fa-plus"></i> ADD ANOTHER JSON
+                </button>
+                <button class="btn btn-success" onclick="combineJsons()">
+                    <i class="fas fa-magic"></i> COMBINE JSONs
+                </button>
+                <button class="btn btn-danger" onclick="resetAll()">
+                    <i class="fas fa-trash"></i> RESET ALL
+                </button>
+            </div>
+        </div>
+
+        <div class="card" id="analytics-section" style="display: none;">
+            <h2 class="subtitle">ANALYTICS</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <span class="analytics-number" id="total-questions">0</span>
+                    <div class="analytics-label">Total Questions</div>
+                </div>
+                <div class="analytics-card">
+                    <span class="analytics-number" id="total-categories">0</span>
+                    <div class="analytics-label">Categories</div>
+                </div>
+                <div class="analytics-card">
+                    <span class="analytics-number" id="total-subcategories">0</span>
+                    <div class="analytics-label">Subcategories</div>
+                </div>
+                <div class="analytics-card">
+                    <span class="analytics-number" id="total-inputs">0</span>
+                    <div class="analytics-label">JSON Inputs</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="combined-section" style="display: none;">
+            <div class="combined-json-container">
+                <div class="combined-json-header">
+                    <h2 class="combined-json-title">COMBINED JSON</h2>
+                    <button class="btn btn-warning" onclick="copyToClipboard()">
+                        <i class="fas fa-copy"></i> COPY TO CLIPBOARD
+                    </button>
+                </div>
+                <textarea id="combined-json" class="combined-textarea" readonly placeholder="Combined JSON will appear here..."></textarea>
+                <div class="success-message" id="copy-success">JSON copied to clipboard!</div>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Quiz
+            </a>
+            <a href="docs.html" class="btn btn-primary">
+                <i class="fas fa-book"></i> Documentation
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let jsonInputCount = 0;
+
+        // Initialize with first JSON input
+        document.addEventListener('DOMContentLoaded', function() {
+            addJsonInput();
+        });
+
+        function addJsonInput() {
+            jsonInputCount++;
+            const container = document.getElementById('json-inputs-container');
+            
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'json-input-container';
+            inputContainer.id = `json-input-${jsonInputCount}`;
+            
+            inputContainer.innerHTML = `
+                <div class="json-input-header">
+                    <div class="json-input-title">JSON INPUT ${jsonInputCount}</div>
+                    ${jsonInputCount > 1 ? `<button class="remove-btn" onclick="removeJsonInput(${jsonInputCount})">
+                        <i class="fas fa-times"></i>
+                    </button>` : ''}
+                </div>
+                <textarea class="json-textarea" id="json-${jsonInputCount}" placeholder="Paste your JSON data here..."></textarea>
+                <div class="error-message" id="error-${jsonInputCount}"></div>
+            `;
+            
+            container.appendChild(inputContainer);
+        }
+
+        function removeJsonInput(id) {
+            const inputElement = document.getElementById(`json-input-${id}`);
+            if (inputElement) {
+                inputElement.remove();
+            }
+            updateAnalytics();
+        }
+
+        function combineJsons() {
+            const allInputs = document.querySelectorAll('.json-textarea');
+            const combinedQuestions = [];
+            let hasErrors = false;
+            
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            
+            allInputs.forEach((textarea, index) => {
+                const jsonText = textarea.value.trim();
+                if (!jsonText) return;
+                
+                try {
+                    // Remove comments before parsing
+                    const cleanJson = jsonText.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+                    const jsonData = JSON.parse(cleanJson);
+                    
+                    if (jsonData.questions && Array.isArray(jsonData.questions)) {
+                        combinedQuestions.push(...jsonData.questions);
+                    } else {
+                        throw new Error('Invalid JSON structure: missing "questions" array');
+                    }
+                } catch (error) {
+                    const errorMsg = document.getElementById(`error-${textarea.id.split('-')[1]}`);
+                    if (errorMsg) {
+                        errorMsg.textContent = `Error: ${error.message}`;
+                        errorMsg.style.display = 'block';
+                    }
+                    hasErrors = true;
+                }
+            });
+            
+            if (hasErrors) {
+                return;
+            }
+            
+            if (combinedQuestions.length === 0) {
+                alert('No valid JSON data found. Please add some quiz data first.');
+                return;
+            }
+            
+            const combinedJson = {
+                questions: combinedQuestions
+            };
+            
+            const formattedJson = JSON.stringify(combinedJson, null, 2);
+            document.getElementById('combined-json').value = formattedJson;
+            
+            // Show results sections
+            document.getElementById('combined-section').style.display = 'block';
+            document.getElementById('analytics-section').style.display = 'block';
+            
+            updateAnalytics(combinedJson);
+            
+            // Scroll to results
+            document.getElementById('combined-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateAnalytics(combinedJson = null) {
+            if (!combinedJson) {
+                // Reset analytics
+                document.getElementById('total-questions').textContent = '0';
+                document.getElementById('total-categories').textContent = '0';
+                document.getElementById('total-subcategories').textContent = '0';
+                document.getElementById('total-inputs').textContent = document.querySelectorAll('.json-textarea').length;
+                return;
+            }
+            
+            const questions = combinedJson.questions;
+            const categories = new Set();
+            const subcategories = new Set();
+            
+            questions.forEach(question => {
+                if (question.category) categories.add(question.category);
+                if (question.subcategory) subcategories.add(question.subcategory);
+            });
+            
+            document.getElementById('total-questions').textContent = questions.length;
+            document.getElementById('total-categories').textContent = categories.size;
+            document.getElementById('total-subcategories').textContent = subcategories.size;
+            document.getElementById('total-inputs').textContent = document.querySelectorAll('.json-textarea').length;
+        }
+
+        function copyToClipboard() {
+            const textarea = document.getElementById('combined-json');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                const successMsg = document.getElementById('copy-success');
+                successMsg.style.display = 'block';
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 3000);
+            } catch (err) {
+                // Fallback for modern browsers
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    const successMsg = document.getElementById('copy-success');
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 3000);
+                }).catch(err => {
+                    alert('Failed to copy to clipboard. Please copy manually.');
+                });
+            }
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+                // Clear all inputs
+                document.getElementById('json-inputs-container').innerHTML = '';
+                jsonInputCount = 0;
+                
+                // Hide results sections
+                document.getElementById('combined-section').style.display = 'none';
+                document.getElementById('analytics-section').style.display = 'none';
+                
+                // Clear combined JSON
+                document.getElementById('combined-json').value = '';
+                
+                // Add initial input
+                addJsonInput();
+                
+                // Clear any success messages
+                document.getElementById('copy-success').style.display = 'none';
+            }
+        }
+
+        // Update input count in analytics when inputs change
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('json-textarea')) {
+                updateAnalytics();
+            }
+        });
+    </script>
+</body>
+
+</html>

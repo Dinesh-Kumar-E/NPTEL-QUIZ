@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizBuzz Slide Builder</title>
+    <link rel="icon" href="https://art.pixilart.com/9953c1af326e635.gif" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b58ff;
+            --secondary: #ff5e5e;
+            --dark: #222034;
+            --light: #e6e6e6;
+            --success: #52de97;
+            --warning: #ffae22;
+            --danger: #ff5555;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background-color: var(--dark);
+            color: var(--light);
+            font-size: 1.2rem;
+        }
+
+        h1, h2, h3, h4, h5, h6, p, label, div, span, button, input, select, option {
+            color: white;
+        }
+
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--primary);
+            text-shadow: 2px 2px 0px var(--secondary);
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: #2d2b4a;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 0 #4b3b8a;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #7649e6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #4b3b8a;
+        }
+
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #4b3b8a;
+        }
+
+        .form-control {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            color: var(--light);
+            padding: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .form-control:focus {
+            background-color: #3e3e6e;
+            color: var(--light);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(139, 88, 255, 0.5);
+        }
+
+        .form-switch .form-check-input {
+            width: 3rem;
+            height: 1.5rem;
+            background-color: #343358;
+            border-color: var(--primary);
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .input-group-text {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .progress {
+            height: 1.5rem;
+            background-color: #343358;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            line-height: 1.5rem;
+        }
+
+        .slide-preview {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--light);
+        }
+
+        .option-item {
+            background-color: #2d2b4a;
+            border: 2px solid #444880;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-number {
+            background-color: var(--primary);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .correct-option {
+            border-color: var(--success);
+            background-color: rgba(52, 225, 139, 0.1);
+        }
+
+        .settings-panel {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--light);
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner-border {
+            color: var(--primary);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background-color: #343358;
+            border: 2px solid var(--primary);
+            color: var(--light);
+        }
+
+        .toast.toast-success {
+            border-color: var(--success);
+        }
+
+        .toast.toast-danger {
+            border-color: var(--danger);
+        }
+
+        .slide-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .nav-btn:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container"></div>
+
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="title">QUIZBUZZ SLIDE BUILDER</h1>
+        </div>
+
+        <!-- Input Section -->
+        <div class="card">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="input-toggle">
+                        <label class="form-check-label" for="input-toggle">
+                            Use URL instead of JSON
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="shuffle-toggle" checked>
+                        <label class="form-check-label" for="shuffle-toggle">
+                            Shuffle Options
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="json-input-section">
+                <label for="json-input" class="form-label">Paste your JSON quiz data:</label>
+                <textarea id="json-input" class="form-control" rows="10" placeholder='{"questions": [{"category": "Math", "subcategory": "Algebra", "question": "What is 2+2?", "options": [{"no": 1, "option": "3"}, {"no": 2, "option": "4"}, {"no": 3, "option": "5"}], "correctoption": [2]}]}'></textarea>
+            </div>
+
+            <div id="url-input-section" style="display: none;">
+                <label for="url-input" class="form-label">Enter JSON URL:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-link"></i></span>
+                    <input type="url" id="url-input" class="form-control" placeholder="https://example.com/quiz.json">
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button id="process-btn" class="btn btn-primary btn-lg">
+                    <i class="fas fa-cogs"></i> PROCESS DATA
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Section -->
+        <div id="loading-section" class="loading-spinner">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Processing quiz data...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" style="display: none;">
+            <!-- Stats -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">Total Questions</div>
+                    <div id="total-questions" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Slides</div>
+                    <div id="total-slides" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Categories</div>
+                    <div id="total-categories" class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Progress</div>
+                    <div id="processing-progress" class="stat-value">0%</div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="card">
+                <h3 class="mb-3">Slide Settings</h3>
+                <div class="settings-panel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="title-template" class="form-label">Title Template:</label>
+                            <input type="text" id="title-template" class="form-control" value="Quiz: {category} - {subcategory}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="slide-theme" class="form-label">Slide Theme:</label>
+                            <select id="slide-theme" class="form-control">
+                                <option value="dark">Dark Theme</option>
+                                <option value="light">Light Theme</option>
+                                <option value="colorful">Colorful Theme</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include-answers" checked>
+                                <label class="form-check-label" for="include-answers">
+                                    Include Answer Slides
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show-category">
+                                <label class="form-check-label" for="show-category">
+                                    Show Category on Slides
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="card">
+                <h3 class="mb-3">Slide Preview</h3>
+                <div id="slide-preview" class="slide-preview">
+                    <div class="slide-number">1</div>
+                    <div class="text-center">
+                        <p>No slides to preview</p>
+                    </div>
+                </div>
+                <div class="slide-navigation">
+                    <button id="prev-slide" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <span id="slide-counter" class="slide-counter">1 / 1</span>
+                    <button id="next-slide" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Generate Section -->
+            <div class="card">
+                <div class="text-center">
+                    <div class="progress mb-3" style="display: none;">
+                        <div id="generation-progress" class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+                    </div>
+                    <button id="generate-ppt" class="btn btn-primary btn-lg">
+                        <i class="fas fa-file-powerpoint"></i> GENERATE POWERPOINT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script>
+        // Global variables
+        let quizData = null;
+        let processedSlides = [];
+        let currentSlideIndex = 0;
+        let isProcessing = false;
+
+        // DOM Elements
+        const inputToggle = document.getElementById('input-toggle');
+        const jsonInputSection = document.getElementById('json-input-section');
+        const urlInputSection = document.getElementById('url-input-section');
+        const jsonInput = document.getElementById('json-input');
+        const urlInput = document.getElementById('url-input');
+        const shuffleToggle = document.getElementById('shuffle-toggle');
+        const processBtn = document.getElementById('process-btn');
+        const loadingSection = document.getElementById('loading-section');
+        const resultsSection = document.getElementById('results-section');
+        const slidePreview = document.getElementById('slide-preview');
+        const prevSlideBtn = document.getElementById('prev-slide');
+        const nextSlideBtn = document.getElementById('next-slide');
+        const slideCounter = document.getElementById('slide-counter');
+        const generatePptBtn = document.getElementById('generate-ppt');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            inputToggle.addEventListener('change', toggleInputMode);
+            processBtn.addEventListener('click', processData);
+            prevSlideBtn.addEventListener('click', () => navigateSlide(-1));
+            nextSlideBtn.addEventListener('click', () => navigateSlide(1));
+            generatePptBtn.addEventListener('click', generatePowerPoint);
+            
+            // Settings listeners
+            document.getElementById('shuffle-toggle').addEventListener('change', updatePreview);
+            document.getElementById('include-answers').addEventListener('change', updatePreview);
+            document.getElementById('show-category').addEventListener('change', updatePreview);
+            document.getElementById('slide-theme').addEventListener('change', updatePreview);
+        }
+
+        function toggleInputMode() {
+            if (inputToggle.checked) {
+                jsonInputSection.style.display = 'none';
+                urlInputSection.style.display = 'block';
+            } else {
+                jsonInputSection.style.display = 'block';
+                urlInputSection.style.display = 'none';
+            }
+        }
+
+        async function processData() {
+            if (isProcessing) return;
+            
+            isProcessing = true;
+            loadingSection.style.display = 'block';
+            resultsSection.style.display = 'none';
+            processBtn.disabled = true;
+
+            try {
+                let jsonData;
+                
+                if (inputToggle.checked) {
+                    // Fetch from URL with proxy
+                    const url = urlInput.value.trim();
+                    if (!url) {
+                        throw new Error('Please enter a valid URL');
+                    }
+                    jsonData = await fetchFromUrl(url);
+                } else {
+                    // Parse JSON input
+                    const jsonText = jsonInput.value.trim();
+                    if (!jsonText) {
+                        throw new Error('Please enter JSON data');
+                    }
+                    jsonData = JSON.parse(jsonText);
+                }
+
+                // Validate and process data
+                quizData = validateQuizData(jsonData);
+                processedSlides = await createSlides(quizData);
+                
+                updateStats();
+                updatePreview();
+                
+                loadingSection.style.display = 'none';
+                resultsSection.style.display = 'block';
+                
+                showToast('Quiz data processed successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Processing error:', error);
+                showToast(error.message, 'danger');
+                loadingSection.style.display = 'none';
+            } finally {
+                isProcessing = false;
+                processBtn.disabled = false;
+            }
+        }
+
+        async function fetchFromUrl(url) {
+            const proxies = [
+                (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+                (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                (url) => `https://cors-anywhere.herokuapp.com/${url}`,
+                (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+                (url) => `https://proxy.cors.sh/${url}`,
+                (url) => `https://thingproxy.freeboard.io/fetch/${url}`,
+                (url) => `https://crossorigin.me/${url}`,
+                (url) => `https://yacdn.org/proxy/${url}`
+            ];
+
+            for (let proxy of proxies) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(url));
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data;
+                    }
+                } catch (error) {
+                    console.warn(`Proxy ${proxy} failed:`, error);
+                }
+            }
+            
+            // Try direct fetch as fallback
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (error) {
+                console.warn('Direct fetch failed:', error);
+            }
+            
+            throw new Error('Unable to fetch data from URL. Please check the URL or try using JSON input instead.');
+        }
+
+        function validateQuizData(data) {
+            if (!data.questions || !Array.isArray(data.questions)) {
+                throw new Error('Invalid JSON: Missing questions array');
+            }
+            
+            if (data.questions.length === 0) {
+                throw new Error('No questions found in the data');
+            }
+
+            // Validate each question
+            data.questions.forEach((question, index) => {
+                if (!question.question) {
+                    throw new Error(`Question ${index + 1}: Missing question text`);
+                }
+                if (!question.options || !Array.isArray(question.options)) {
+                    throw new Error(`Question ${index + 1}: Missing or invalid options`);
+                }
+                if (!question.correctoption || !Array.isArray(question.correctoption)) {
+                    throw new Error(`Question ${index + 1}: Missing or invalid correct options`);
+                }
+            });
+
+            return data;
+        }
+
+        async function createSlides(data) {
+            const slides = [];
+            const shuffleOptions = shuffleToggle.checked;
+            const includeAnswers = document.getElementById('include-answers').checked;
+
+            for (let i = 0; i < data.questions.length; i++) {
+                const question = data.questions[i];
+                let options = [...question.options];
+                
+                // Shuffle options if enabled
+                if (shuffleOptions) {
+                    options = shuffleArray(options);
+                }
+
+                // Question slide
+                const questionSlide = {
+                    type: 'question',
+                    questionNumber: i + 1,
+                    category: question.category || '',
+                    subcategory: question.subcategory || '',
+                    question: question.question,
+                    options: options,
+                    correctOptions: question.correctoption
+                };
+                slides.push(questionSlide);
+
+                // Answer slide
+                if (includeAnswers) {
+                    const answerSlide = {
+                        type: 'answer',
+                        questionNumber: i + 1,
+                        category: question.category || '',
+                        subcategory: question.subcategory || '',
+                        question: question.question,
+                        options: options,
+                        correctOptions: question.correctoption
+                    };
+                    slides.push(answerSlide);
+                }
+            }
+
+            return slides;
+        }
+
+        function updateStats() {
+            document.getElementById('total-questions').textContent = quizData.questions.length;
+            document.getElementById('total-slides').textContent = processedSlides.length;
+            
+            const categories = new Set(quizData.questions.map(q => q.category).filter(c => c));
+            document.getElementById('total-categories').textContent = categories.size;
+        }
+
+        function updatePreview() {
+            if (!processedSlides.length) return;
+            
+            // Recreate slides with current settings
+            createSlides(quizData).then(slides => {
+                processedSlides = slides;
+                updateStats();
+                displaySlide(currentSlideIndex);
+            });
+        }
+
+        function displaySlide(index) {
+            if (!processedSlides.length || index < 0 || index >= processedSlides.length) return;
+            
+            const slide = processedSlides[index];
+            const showCategory = document.getElementById('show-category').checked;
+            
+            let slideContent = '';
+            
+            if (slide.type === 'question') {
+                slideContent = `
+                    <div class="slide-number">${index + 1}</div>
+                    ${showCategory && slide.category ? `<div class="text-center mb-3"><strong>${slide.category}${slide.subcategory ? ' - ' + slide.subcategory : ''}</strong></div>` : ''}
+                    <div class="question-text">Q${slide.questionNumber}: ${slide.question}</div>
+                    <div class="options-container">
+                        ${slide.options.map((option, i) => `
+                            <div class="option-item">
+                                <div class="option-number">${String.fromCharCode(65 + i)}</div>
+                                <div class="option-text">${option.option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                // Answer slide
+                slideContent = `
+                    <div class="slide-number">${index + 1}</div>
+                    ${showCategory && slide.category ? `<div class="text-center mb-3"><strong>${slide.category}${slide.subcategory ? ' - ' + slide.subcategory : ''}</strong></div>` : ''}
+                    <div class="question-text">Q${slide.questionNumber}: ${slide.question}</div>
+                    <div class="options-container">
+                        ${slide.options.map((option, i) => {
+                            const isCorrect = slide.correctOptions.includes(option.no);
+                            return `
+                                <div class="option-item ${isCorrect ? 'correct-option' : ''}">
+                                    <div class="option-number">${String.fromCharCode(65 + i)}</div>
+                                    <div class="option-text">${option.option}</div>
+                                    ${isCorrect ? '<i class="fas fa-check-circle text-success ms-2"></i>' : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="text-center mt-3">
+                        <h4 style="color: var(--success);">✓ Correct Answer${slide.correctOptions.length > 1 ? 's' : ''}</h4>
+                    </div>
+                `;
+            }
+            
+            slidePreview.innerHTML = slideContent;
+            slideCounter.textContent = `${index + 1} / ${processedSlides.length}`;
+            
+            prevSlideBtn.disabled = index === 0;
+            nextSlideBtn.disabled = index === processedSlides.length - 1;
+        }
+
+        function navigateSlide(direction) {
+            const newIndex = currentSlideIndex + direction;
+            if (newIndex >= 0 && newIndex < processedSlides.length) {
+                currentSlideIndex = newIndex;
+                displaySlide(currentSlideIndex);
+            }
+        }
+
+        async function generatePowerPoint() {
+            if (!processedSlides.length) {
+                showToast('No slides to generate', 'danger');
+                return;
+            }
+
+            try {
+                generatePptBtn.disabled = true;
+                const progressBar = document.getElementById('generation-progress');
+                const progressContainer = progressBar.parentElement;
+                progressContainer.style.display = 'block';
+                
+                // Create new presentation
+                let pptx = new PptxGenJS();
+                
+                // Set presentation properties
+                pptx.title = 'QuizBuzz Quiz Presentation';
+                pptx.subject = 'Generated Quiz Slides';
+                pptx.author = 'QuizBuzz Slide Builder';
+                
+                const theme = document.getElementById('slide-theme').value;
+                const showCategory = document.getElementById('show-category').checked;
+                
+                // Theme colors
+                const themes = {
+                    dark: { bg: '222034', text: 'FFFFFF', accent: '8B58FF', correct: '52DE97' },
+                    light: { bg: 'FFFFFF', text: '222034', accent: '8B58FF', correct: '52DE97' },
+                    colorful: { bg: '1E1E2E', text: 'FFFFFF', accent: 'FF6B6B', correct: '4ECDC4' }
+                };
+                
+                const currentTheme = themes[theme];
+                
+                // Generate slides
+                for (let i = 0; i < processedSlides.length; i++) {
+                    const slide = processedSlides[i];
+                    const pptSlide = pptx.addSlide();
+                    
+                    // Set slide background
+                    pptSlide.background = { color: currentTheme.bg };
+                    
+                    let yPosition = 0.5;
+                    
+                    // Add category if enabled
+                    if (showCategory && slide.category) {
+                        pptSlide.addText(`${slide.category}${slide.subcategory ? ' - ' + slide.subcategory : ''}`, {
+                            x: 0.5, y: yPosition, w: 9, h: 0.5,
+                            fontSize: 16,
+                            color: currentTheme.accent,
+                            bold: true,
+                            align: 'center'
+                        });
+                        yPosition += 0.8;
+                    }
+                    
+                    // Add question
+                    const questionText = slide.type === 'answer' ? 
+                        `Q${slide.questionNumber}: ${slide.question} (ANSWER)` : 
+                        `Q${slide.questionNumber}: ${slide.question}`;
+                    
+                    pptSlide.addText(questionText, {
+                        x: 0.5, y: yPosition, w: 9, h: 1,
+                        fontSize: 20,
+                        color: currentTheme.text,
+                        bold: true,
+                        align: 'left'
+                    });
+                    yPosition += 1.5;
+                    
+                    // Add options
+                    slide.options.forEach((option, optionIndex) => {
+                        const isCorrect = slide.correctOptions.includes(option.no);
+                        const optionLetter = String.fromCharCode(65 + optionIndex);
+                        const optionText = `${optionLetter}. ${option.option}`;
+                        
+                        let optionColor = currentTheme.text;
+                        let backgroundColor = null;
+                        
+                        if (slide.type === 'answer' && isCorrect) {
+                            optionColor = currentTheme.correct; // Change to green color instead of black
+                            backgroundColor = null; // Remove background color for better contrast
+                        }
+                        
+                        pptSlide.addText(optionText, {
+                            x: 1, y: yPosition, w: 8, h: 0.6,
+                            fontSize: 16,
+                            color: optionColor,
+                            backgroundColor: backgroundColor,
+                            align: 'left',
+                            margin: 0.1,
+                            bold: slide.type === 'answer' && isCorrect // Make correct answers bold
+                        });
+                        
+                        yPosition += 0.8;
+                    });
+                    
+                    // Update progress
+                    const progress = Math.round(((i + 1) / processedSlides.length) * 100);
+                    progressBar.style.width = progress + '%';
+                    progressBar.textContent = progress + '%';
+                    
+                    // Allow UI to update
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+                
+                // Generate and download
+                const fileName = `QuizBuzz_Slides_${new Date().toISOString().split('T')[0]}.pptx`;
+                await pptx.writeFile({ fileName: fileName });
+                
+                showToast(`PowerPoint generated successfully! Downloaded as ${fileName}`, 'success');
+                
+            } catch (error) {
+                console.error('Generation error:', error);
+                showToast('Error generating PowerPoint: ' + error.message, 'danger');
+            } finally {
+                generatePptBtn.disabled = false;
+                document.getElementById('generation-progress').parentElement.style.display = 'none';
+            }
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function showToast(message, type = 'primary') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast show toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-body">
+                    ${message}
+                    <button type="button" class="btn-close btn-close-white float-end" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

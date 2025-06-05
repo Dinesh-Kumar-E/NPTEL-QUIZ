@@ -284,6 +284,13 @@ p,ul,ol {
                     </li>
                     <li><span class="tree-item">📄 <a href="#troubleshooting">Troubleshooting</a></span></li>
                     <li><span class="tree-item">📄 <a href="#results-review">Quiz Results & Review</a></span></li>
+                    <li>
+                        <span class="tree-item">📁 <a href="#additional-tools">Additional Tools</a></span>
+                        <ul>
+                            <li><span class="tree-branch">├─ 📄 <a href="#data-builder">Data Builder</a></span></li>
+                            <li><span class="tree-branch">└─ 📄 <a href="#slide-builder">Slide Builder</a></span></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
 
@@ -687,9 +694,141 @@ p,ul,ol {
                 </div>
             </div>
 
+            <div class="section" id="additional-tools">
+                <h2 class="section-title">ADDITIONAL TOOLS</h2>
+                <p>
+                    QuizBuzz includes several additional tools to help you create and manage quiz content more effectively.
+                </p>
+
+                <div id="data-builder">
+                    <h3 class="section-subtitle">Data Builder</h3>
+                    <p>
+                        The Data Builder tool allows you to combine multiple quiz JSON files into one comprehensive quiz dataset.
+                        This is particularly useful when you have multiple quiz files that you want to merge together.
+                    </p>
+
+                    <div class="example-box">
+                        <div class="example-title">Use Cases:</div>
+                        <ul>
+                            <li>Combining quizzes from different subjects into one comprehensive exam</li>
+                            <li>Merging quiz files created by different contributors</li>
+                            <li>Creating master quiz files from smaller topic-specific quizzes</li>
+                            <li>Building large question banks from multiple sources</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="section-subtitle">Features:</h4>
+                    <ul>
+                        <li><strong>Multiple JSON Inputs:</strong> Add as many JSON files as needed</li>
+                        <li><strong>Real-time Analytics:</strong> See total questions, categories, and subcategories</li>
+                        <li><strong>Error Validation:</strong> Automatic JSON validation with error reporting</li>
+                        <li><strong>Combined Output:</strong> Generated combined JSON with proper formatting</li>
+                        <li><strong>Copy to Clipboard:</strong> Easy copying of the final combined JSON</li>
+                        <li><strong>Comment Support:</strong> Removes comments from JSON before processing</li>
+                    </ul>
+
+                    <h4 class="section-subtitle">How to Use:</h4>
+                    <ol>
+                        <li>Access the Data Builder from the main quiz page or via <a href="databuild.html" target="_blank">databuild.html</a></li>
+                        <li>Paste your first JSON quiz data into the initial input field</li>
+                        <li>Click "ADD ANOTHER JSON" to add more input fields as needed</li>
+                        <li>Paste additional JSON data into each field</li>
+                        <li>Click "COMBINE JSONs" to merge all valid JSON inputs</li>
+                        <li>Review the analytics to verify the combination results</li>
+                        <li>Copy the combined JSON using the "COPY TO CLIPBOARD" button</li>
+                        <li>Use the combined JSON in your quiz application or save it to a file</li>
+                    </ol>
+
+                    <div class="note-box">
+                        <div class="note-title">TIP:</div>
+                        <p>
+                            The Data Builder will show error messages for any invalid JSON inputs, helping you identify and fix formatting issues before combining.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="slide-builder">
+                    <h3 class="section-subtitle">Slide Builder</h3>
+                    <p>
+                        The Slide Builder tool converts your quiz JSON data into PowerPoint presentations, making it easy to create 
+                        educational slides for classroom use or presentations.
+                    </p>
+
+                    <div class="example-box">
+                        <div class="example-title">Use Cases:</div>
+                        <ul>
+                            <li>Creating classroom presentation slides from quiz questions</li>
+                            <li>Generating educational content for training sessions</li>
+                            <li>Converting quiz data into presentation format for review sessions</li>
+                            <li>Creating interactive classroom activities</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="section-subtitle">Features:</h4>
+                    <ul>
+                        <li><strong>JSON or URL Input:</strong> Accept JSON data directly or from URLs/Pastebin</li>
+                        <li><strong>Multiple Themes:</strong> Dark, Light, and Colorful presentation themes</li>
+                        <li><strong>Answer Slides:</strong> Optional answer slides with highlighted correct options</li>
+                        <li><strong>Category Display:</strong> Show or hide category information on slides</li>
+                        <li><strong>Option Shuffling:</strong> Randomize answer options for variety</li>
+                        <li><strong>Live Preview:</strong> Navigate through slides before generating</li>
+                        <li><strong>Custom Templates:</strong> Customizable slide title templates</li>
+                        <li><strong>Progress Tracking:</strong> Real-time generation progress</li>
+                    </ul>
+
+                    <h4 class="section-subtitle">How to Use:</h4>
+                    <ol>
+                        <li>Access the Slide Builder from <a href="slidebuilder.html" target="_blank">slidebuilder.html</a></li>
+                        <li>Choose input method: JSON data or URL</li>
+                        <li>If using JSON: Paste your quiz data into the text area</li>
+                        <li>If using URL: Enter the URL to your JSON data (Pastebin, etc.)</li>
+                        <li>Configure shuffle options if desired</li>
+                        <li>Click "PROCESS DATA" to load and validate your quiz</li>
+                        <li>Review the statistics and configure slide settings:
+                            <ul>
+                                <li>Choose presentation theme</li>
+                                <li>Set title template</li>
+                                <li>Toggle answer slides</li>
+                                <li>Enable/disable category display</li>
+                            </ul>
+                        </li>
+                        <li>Use the preview section to navigate through slides</li>
+                        <li>Click "GENERATE POWERPOINT" to create and download the presentation</li>
+                    </ol>
+
+                    <h4 class="section-subtitle">Slide Types:</h4>
+                    <ul>
+                        <li><strong>Question Slides:</strong> Display the question with all answer options</li>
+                        <li><strong>Answer Slides:</strong> Show the same question with correct answers highlighted in green</li>
+                        <li><strong>Category Headers:</strong> Optional category/subcategory information at the top</li>
+                    </ul>
+
+                    <div class="note-box">
+                        <div class="note-title">PowerPoint Compatibility:</div>
+                        <p>
+                            Generated PowerPoint files are compatible with Microsoft PowerPoint, LibreOffice Impress, and Google Slides.
+                            The presentations use standard fonts and formatting for maximum compatibility.
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">Large Datasets:</div>
+                        <p>
+                            For very large quiz datasets (500+ questions), generation may take some time. The progress bar will show the current status.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="nav-links">
                 <a href="index.html" class="btn btn-primary">
                     <i class="fas fa-arrow-left"></i> Back to Quiz
+                </a>
+                <a href="databuild.html" class="btn btn-primary">
+                    <i class="fas fa-hammer"></i> Data Builder
+                </a>
+                <a href="slidebuilder.html" class="btn btn-primary">
+                    <i class="fas fa-presentation"></i> Slide Builder
                 </a>
             </div>
         </div>
